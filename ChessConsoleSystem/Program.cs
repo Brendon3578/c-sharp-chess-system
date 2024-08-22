@@ -1,10 +1,13 @@
-﻿namespace ChessConsoleSystem
+﻿using ChessConsoleSystem.GameBoard;
+
+namespace ChessConsoleSystem
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            Position pawnPosition = new Position(2, 2);
+            Console.WriteLine($"PawnPosition: {pawnPosition}");
         }
     }
 }
