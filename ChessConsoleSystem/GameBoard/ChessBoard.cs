@@ -11,5 +11,18 @@
             Columns = columns;
             Pieces = new Piece[Rows, Columns];
         }
+
+        public Piece GetPiece(int row, int column)
+        {
+            return Pieces[row, column];
+        }
+
+        public void SetPiece(Piece piece, Position pos)
+        {
+            Pieces[pos.Row, pos.Column] = piece;
+            piece.Position = pos;
+        }
+
+
     }
 }

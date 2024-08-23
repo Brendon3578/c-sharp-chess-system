@@ -5,6 +5,6 @@
         White,
         Black,
         Brown,
-        Gray
+        Red,
     }
 }

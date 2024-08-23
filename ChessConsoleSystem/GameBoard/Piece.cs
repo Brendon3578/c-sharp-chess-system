@@ -1,18 +1,18 @@
 ﻿namespace ChessConsoleSystem.GameBoard
 {
-    internal class Piece
+    abstract class Piece
     {
         public Position Position { get; set; }
         public Color Color { get; protected set; }
         public int MovesAmount { get; protected set; }
         public ChessBoard ChessBoard { get; protected set; }
 
-        public Piece(Position position, Color color, ChessBoard chessBoard)
+        public Piece(ChessBoard chessBoard, Color color)
         {
-            Position = position;
-            Color = color;
             ChessBoard = chessBoard;
+            Color = color;
             MovesAmount = 0;
+            Position = null;
         }
     }
 }
