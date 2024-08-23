@@ -6,8 +6,7 @@ namespace ChessConsoleSystem
     {
         static void Main(string[] args)
         {
-            Position pawnPosition = new Position(2, 2);
-            Console.WriteLine($"PawnPosition: {pawnPosition}");
+            ChessBoard chessBoard = new ChessBoard(8, 8);
         }
     }
 }
