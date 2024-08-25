@@ -10,6 +10,11 @@ namespace ChessConsoleSystem
         {
             ChessBoard chessBoard = new ChessBoard(8, 8);
 
+            ChessPosition cp = new ChessPosition('a', 1);
+            Console.WriteLine($"ChessPosition: {cp}");
+            Console.WriteLine($"Position: {cp.ToPosition()}");
+
+
             try
             {
 
