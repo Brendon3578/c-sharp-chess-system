@@ -18,12 +18,12 @@ namespace ChessConsoleSystem
             try
             {
 
-                chessBoard.SetPiece(new Rook(chessBoard, Color.Red), new Position(0, 0));
+                chessBoard.SetPiece(new Rook(chessBoard, Color.White), new Position(0, 0));
                 // throw exceptions
                 //chessBoard.SetPiece(new Rook(chessBoard, Color.Red), new Position(0, 0));
                 //chessBoard.SetPiece(new Rook(chessBoard, Color.Red), new Position(9, 0));
-                chessBoard.SetPiece(new Rook(chessBoard, Color.Brown), new Position(1, 3));
-                chessBoard.SetPiece(new King(chessBoard, Color.Black), new Position(2, 4));
+                chessBoard.SetPiece(new Rook(chessBoard, Color.Black), new Position(1, 3));
+                chessBoard.SetPiece(new King(chessBoard, Color.Brown), new Position(2, 4));
                 Screen.PrintChessBoard(chessBoard);
             }
             catch (GameBoardException ex)

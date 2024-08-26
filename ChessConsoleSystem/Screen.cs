@@ -8,28 +8,30 @@ namespace ChessConsoleSystem
         {
             for (int r = 0; r < board.Rows; r++) // rows
             {
+                Console.Write($"{8 - r} ");
                 for (int c = 0; c < board.Columns; c++) // columns
                 {
                     if (board.GetPiece(r, c) == null)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGray;
                         Console.Write("- ");
-
                     }
                     else
                     {
-                        Console.ResetColor();
                         PrintSinglePiece(board.GetPiece(r, c));
                     }
+                    Console.ResetColor();
                 }
                 Console.WriteLine();
             }
+            Console.WriteLine("  a b c d e f g h");
         }
 
         public static void PrintSinglePiece(Piece p)
         {
             if (p == null)
             {
+                Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write("- ");
             }
             else
@@ -43,10 +45,10 @@ namespace ChessConsoleSystem
         {
             return color switch
             {
-                Color.Black => ConsoleColor.Gray,
+                Color.Black => ConsoleColor.DarkYellow,
                 Color.White => ConsoleColor.White,
                 Color.Red => ConsoleColor.Red,
-                Color.Brown => ConsoleColor.DarkYellow,
+                Color.Brown => ConsoleColor.DarkRed,
                 _ => ConsoleColor.White
             };
         }
