@@ -30,14 +30,22 @@ namespace ChessConsoleSystem.GameBoard
             return GetPiece(pos) != null;
         }
 
-        public void SetPiece(Piece piece, Position pos)
+        public void PutPiece(Piece piece, Position pos)
         {
             if (ExistsPiece(pos))
-            {
                 throw new PieceAlreadyExists($"Piece already exists in position [{pos.Row}, {pos.Column}]!");
-            }
             Pieces[pos.Row, pos.Column] = piece;
             piece.Position = pos;
+        }
+
+        public Piece? RemovePiece(Position pos)
+        {
+            var piece = GetPiece(pos);
+            if (!ExistsPiece(pos))
+                return null;
+            piece.Position = null;
+            Pieces[pos.Row, pos.Column] = null;
+            return piece;
         }
 
         public bool IsValidPosition(Position pos)

@@ -1,5 +1,4 @@
 ﻿using ChessConsoleSystem.Chess;
-using ChessConsoleSystem.GameBoard;
 using ChessConsoleSystem.GameBoard.Exceptions;
 
 namespace ChessConsoleSystem
@@ -8,23 +7,23 @@ namespace ChessConsoleSystem
     {
         static void Main(string[] args)
         {
-            ChessBoard chessBoard = new ChessBoard(8, 8);
-
-            ChessPosition cp = new ChessPosition('a', 1);
-            Console.WriteLine($"ChessPosition: {cp}");
-            Console.WriteLine($"Position: {cp.ToPosition()}");
-
-
             try
             {
+                var round = new ChessMatch();
 
-                chessBoard.SetPiece(new Rook(chessBoard, Color.White), new Position(0, 0));
-                // throw exceptions
-                //chessBoard.SetPiece(new Rook(chessBoard, Color.Red), new Position(0, 0));
-                //chessBoard.SetPiece(new Rook(chessBoard, Color.Red), new Position(9, 0));
-                chessBoard.SetPiece(new Rook(chessBoard, Color.Black), new Position(1, 3));
-                chessBoard.SetPiece(new King(chessBoard, Color.Brown), new Position(2, 4));
-                Screen.PrintChessBoard(chessBoard);
+                while (!round.IsEnded)
+                {
+                    Console.Clear();
+                    Screen.PrintChessBoard(round.Board);
+
+                    Console.Write("\nOrigem: ");
+                    var origin = Screen.ReadChessPosition().ToPosition();
+
+                    Console.Write("Destino: ");
+                    var end = Screen.ReadChessPosition().ToPosition();
+
+                    round.ExecuteMoveset(origin, end);
+                }
             }
             catch (GameBoardException ex)
             {

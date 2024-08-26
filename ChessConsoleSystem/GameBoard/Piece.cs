@@ -14,5 +14,7 @@
             MovesAmount = 0;
             Position = null;
         }
+
+        public void IncrementMovesAmount() => MovesAmount++;
     }
 }

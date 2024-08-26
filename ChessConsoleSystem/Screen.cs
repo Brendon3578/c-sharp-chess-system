@@ -1,4 +1,5 @@
-﻿using ChessConsoleSystem.GameBoard;
+﻿using ChessConsoleSystem.Chess;
+using ChessConsoleSystem.GameBoard;
 
 namespace ChessConsoleSystem
 {
@@ -51,6 +52,14 @@ namespace ChessConsoleSystem
                 Color.Brown => ConsoleColor.DarkRed,
                 _ => ConsoleColor.White
             };
+        }
+
+        public static ChessPosition ReadChessPosition()
+        {
+            string s = Console.ReadLine();
+            char file = s[0];
+            int rank = int.Parse(s[1] + "");
+            return new ChessPosition(file, rank);
         }
     }
 }
