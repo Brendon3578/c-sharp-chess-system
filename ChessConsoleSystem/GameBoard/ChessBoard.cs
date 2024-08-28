@@ -19,7 +19,7 @@ namespace ChessConsoleSystem.GameBoard
             return Pieces[row, column];
         }
 
-        public Piece GetPiece(Position pos)
+        public Piece? GetPiece(Position pos)
         {
             return Pieces[pos.Row, pos.Column];
         }

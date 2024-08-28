@@ -19,7 +19,12 @@ namespace ChessConsoleSystem
                     Console.Write("\nOrigem: ");
                     var origin = Screen.ReadChessPosition().ToPosition();
 
-                    Console.Write("Destino: ");
+                    Console.Clear();
+                    bool[,] possibleMoveset = round.Board.GetPiece(origin).GetPossibleMoveset();
+                    Screen.PrintChessBoard(round.Board, possibleMoveset);
+
+
+                    Console.Write("\nDestino: ");
                     var end = Screen.ReadChessPosition().ToPosition();
 
                     round.ExecuteMoveset(origin, end);

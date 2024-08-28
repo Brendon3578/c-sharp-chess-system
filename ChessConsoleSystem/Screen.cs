@@ -12,24 +12,33 @@ namespace ChessConsoleSystem
                 Console.Write($"{8 - r} ");
                 for (int c = 0; c < board.Columns; c++) // columns
                 {
-                    if (board.GetPiece(r, c) == null)
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkGray;
-                        Console.Write("- ");
-                    }
-                    else
-                    {
-                        PrintSinglePiece(board.GetPiece(r, c));
-                    }
-                    Console.ResetColor();
+                    PrintSinglePiece(board.GetPiece(r, c));
                 }
                 Console.WriteLine();
             }
             Console.WriteLine("  a b c d e f g h");
         }
 
-        public static void PrintSinglePiece(Piece p)
+        public static void PrintChessBoard(ChessBoard board, bool[,] possibleMoveset)
         {
+            for (int r = 0; r < board.Rows; r++) // rows
+            {
+                Console.Write($"{8 - r} ");
+                for (int c = 0; c < board.Columns; c++) // columns
+                {
+                    bool pieceCanMoveInPosition = possibleMoveset[r, c];
+                    PrintSinglePiece(board.GetPiece(r, c), pieceCanMoveInPosition);
+                }
+                Console.WriteLine();
+            }
+            Console.WriteLine("  a b c d e f g h");
+        }
+
+
+        public static void PrintSinglePiece(Piece p, bool moveablePosition = false)
+        {
+            if (moveablePosition)
+                Console.BackgroundColor = ConsoleColor.DarkGray;
             if (p == null)
             {
                 Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -40,6 +49,7 @@ namespace ChessConsoleSystem
                 Console.ForegroundColor = ConvertPieceColorToConsoleColor(p.Color);
                 Console.Write($"{p} ");
             }
+            Console.ResetColor();
         }
 
         public static ConsoleColor ConvertPieceColorToConsoleColor(Color color)
