@@ -1,4 +1,5 @@
 ﻿using ChessConsoleSystem.GameBoard;
+using ChessConsoleSystem.GameBoard.Exceptions;
 
 namespace ChessConsoleSystem.Chess
 {
@@ -6,14 +7,14 @@ namespace ChessConsoleSystem.Chess
     {
         public ChessBoard Board { get; }
         public int Round { get; private set; }
-        public Color ActualPlayer { get; private set; }
+        public Color CurrentPlayerColor { get; private set; }
         public bool IsEnded { get; private set; }
 
         public ChessMatch()
         {
             Board = new ChessBoard(8, 8);
             Round = 1;
-            ActualPlayer = Color.White;
+            CurrentPlayerColor = Color.White;
             PlacePieces();
             IsEnded = false;
         }
@@ -23,6 +24,29 @@ namespace ChessConsoleSystem.Chess
             ExecuteMoveset(origin, end);
             Round++;
             ChangePlayer();
+        }
+
+        public void ValidateOriginPosition(Position origin)
+        {
+            var p = Board.GetPiece(origin) ?? throw new InvalidPositionException("Piece don't exists in this origin position!");
+            if (CurrentPlayerColor != p.Color)
+            {
+                throw new WrongPlayerException("The origin chosen piece is not yours!");
+            }
+            if (!p.ExistsPossibleMovesets())
+            {
+                throw new StuckPieceException("There are no possible moves to move the origin piece!");
+            }
+        }
+
+        public void ValidateEndPosition(Position origin, Position end)
+        {
+            var originPiece = Board.GetPiece(origin) ?? throw new InvalidPositionException("Piece don't exists in this origin position!");
+
+            if (!originPiece.IsPossibleToMoveTo(end))
+            {
+                throw new InvalidPositionException("You cant move for this end position!");
+            }
         }
 
         private void ExecuteMoveset(Position origin, Position end)
@@ -36,10 +60,10 @@ namespace ChessConsoleSystem.Chess
 
         private void ChangePlayer()
         {
-            if (ActualPlayer == Color.White)
-                ActualPlayer = Color.Black;
+            if (CurrentPlayerColor == Color.White)
+                CurrentPlayerColor = Color.Black;
             else
-                ActualPlayer = Color.White;
+                CurrentPlayerColor = Color.White;
         }
 
         public void PlacePieces()

@@ -26,5 +26,17 @@
             bool hasEnemyPiece = p?.Color != Color;
             return isFreeSpace || hasEnemyPiece;
         }
+
+        public bool IsPossibleToMoveTo(Position pos)
+        {
+            return GetPossibleMoveset()[pos.Row, pos.Column];
+        }
+
+        public bool ExistsPossibleMovesets()
+        {
+            bool[,] moveset = GetPossibleMoveset();
+            bool existsMoves = moveset.Cast<bool>().Any(move => move);
+            return existsMoves;
+        }
     }
 }
