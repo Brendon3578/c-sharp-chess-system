@@ -5,33 +5,32 @@ namespace ChessConsoleSystem
 {
     internal class Screen
     {
-        public static void PrintChessBoard(ChessBoard board)
-        {
-            for (int r = 0; r < board.Rows; r++) // rows
-            {
-                Console.Write($"{8 - r} ");
-                for (int c = 0; c < board.Columns; c++) // columns
-                {
-                    PrintSinglePiece(board.GetPiece(r, c));
-                }
-                Console.WriteLine();
-            }
-            Console.WriteLine("  a b c d e f g h");
-        }
 
-        public static void PrintChessBoard(ChessBoard board, bool[,] possibleMoveset)
+        public static void PrintChessBoard(ChessBoard board, bool[,]? possibleMoveset = null)
         {
+            PrintBoardHeader();
             for (int r = 0; r < board.Rows; r++) // rows
             {
-                Console.Write($"{8 - r} ");
+                Console.Write($" {8 - r} ");
+                WriteBoardLedge();
+                Console.Write(" ");
                 for (int c = 0; c < board.Columns; c++) // columns
                 {
-                    bool pieceCanMoveInPosition = possibleMoveset[r, c];
-                    PrintSinglePiece(board.GetPiece(r, c), pieceCanMoveInPosition);
+                    if (possibleMoveset != null)
+                    {
+                        bool pieceCanMoveInPosition = possibleMoveset[r, c];
+                        PrintSinglePiece(board.GetPiece(r, c), pieceCanMoveInPosition);
+                    }
+                    else
+                    {
+                        PrintSinglePiece(board.GetPiece(r, c));
+                    }
                 }
+                WriteBoardLedge();
                 Console.WriteLine();
             }
-            Console.WriteLine("  a b c d e f g h");
+            PrintBoardFooter();
+            Console.WriteLine("     a b c d e f g h");
         }
 
 
@@ -70,6 +69,20 @@ namespace ChessConsoleSystem
             char file = s[0];
             int rank = int.Parse(s[1] + "");
             return new ChessPosition(file, rank);
+        }
+
+        public static void PrintBoardHeader()
+        {
+            Console.WriteLine("   ┌─────────────────┐");
+        }
+        public static void PrintBoardFooter()
+        {
+            Console.WriteLine("   └─────────────────┘");
+        }
+
+        public static void WriteBoardLedge()
+        {
+            Console.Write("│");
         }
     }
 }

@@ -4,9 +4,9 @@ namespace ChessConsoleSystem.Chess
 {
     class ChessMatch
     {
-        public ChessBoard Board { get; set; }
-        private int Round;
-        private Color ActualPlayer;
+        public ChessBoard Board { get; }
+        public int Round { get; private set; }
+        public Color ActualPlayer { get; private set; }
         public bool IsEnded { get; private set; }
 
         public ChessMatch()
@@ -18,13 +18,28 @@ namespace ChessConsoleSystem.Chess
             IsEnded = false;
         }
 
-        public void ExecuteMoveset(Position origin, Position end)
+        public void StartMatchTurn(Position origin, Position end)
+        {
+            ExecuteMoveset(origin, end);
+            Round++;
+            ChangePlayer();
+        }
+
+        private void ExecuteMoveset(Position origin, Position end)
         {
 
             Piece p = Board.RemovePiece(origin);
             p.IncrementMovesAmount();
             var CapturedPiece = Board.RemovePiece(end);
             Board.PutPiece(p, end);
+        }
+
+        private void ChangePlayer()
+        {
+            if (ActualPlayer == Color.White)
+                ActualPlayer = Color.Black;
+            else
+                ActualPlayer = Color.White;
         }
 
         public void PlacePieces()
@@ -42,26 +57,6 @@ namespace ChessConsoleSystem.Chess
             Board.PutPiece(new Rook(Board, Color.Black), new ChessPosition('e', 7).ToPosition());
             Board.PutPiece(new Rook(Board, Color.Black), new ChessPosition('e', 8).ToPosition());
             Board.PutPiece(new King(Board, Color.Black), new ChessPosition('d', 8).ToPosition());
-
-
-
         }
-
-
-    }
-}
-
-public static class DebugExtensions
-{
-    public static string Test2D(this Array source, int pad = 10)
-    {
-        var result = "";
-        for (int i = source.GetLowerBound(0); i <= source.GetUpperBound(0); i++)
-        {
-            for (int j = source.GetLowerBound(1); j <= source.GetUpperBound(1); j++)
-                result += source.GetValue(i, j).ToString().PadLeft(pad);
-            result += "\n";
-        }
-        return result;
     }
 }
