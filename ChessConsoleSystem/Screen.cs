@@ -6,6 +6,18 @@ namespace ChessConsoleSystem
     internal class Screen
     {
 
+        public static void PrintChessMatch(ChessMatch match)
+        {
+            PrintChessBoard(match.Board);
+            PrintCapturedPieces(match);
+            Console.WriteLine($"\n   ┌ Round {match.Round}");
+            Console.Write("   │ Await for ");
+            Console.ForegroundColor = ConvertPieceColorToConsoleColor(match.CurrentPlayerColor);
+            Console.Write(match.CurrentPlayerColor.ToString().ToUpperInvariant());
+            Console.ResetColor();
+            Console.WriteLine(" pieces to play");
+        }
+
         public static void PrintChessBoard(ChessBoard board, bool[,]? possibleMoveset = null)
         {
             PrintBoardHeader();
@@ -33,6 +45,32 @@ namespace ChessConsoleSystem
             Console.WriteLine("     a b c d e f g h");
         }
 
+        public static void PrintCapturedPieces(ChessMatch match)
+        {
+            Console.WriteLine("   ┌ Captured Pieces");
+            Console.Write("   │ White:");
+            PrintPiecesSet(match.GetCapturedPiecesByColor(Color.White));
+            Console.Write("   │ Black:");
+            PrintPiecesSet(match.GetCapturedPiecesByColor(Color.Black));
+        }
+
+        public static void PrintPiecesSet(HashSet<Piece> piecesSet)
+        {
+            Console.Write("[ ");
+            foreach (var piece in piecesSet)
+            {
+                WritePiece(piece);
+            }
+            Console.WriteLine("]");
+        }
+
+        public static void WritePiece(Piece p)
+        {
+            Console.ForegroundColor = ConvertPieceColorToConsoleColor(p.Color);
+            Console.Write($"{p} ");
+            Console.ResetColor();
+        }
+
 
         public static void PrintSinglePiece(Piece p, bool moveablePosition = false)
         {
@@ -42,13 +80,12 @@ namespace ChessConsoleSystem
             {
                 Console.ForegroundColor = ConsoleColor.DarkGray;
                 Console.Write("- ");
+                Console.ResetColor();
             }
             else
             {
-                Console.ForegroundColor = ConvertPieceColorToConsoleColor(p.Color);
-                Console.Write($"{p} ");
+                WritePiece(p);
             }
-            Console.ResetColor();
         }
 
         public static ConsoleColor ConvertPieceColorToConsoleColor(Color color)

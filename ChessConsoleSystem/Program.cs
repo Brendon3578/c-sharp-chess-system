@@ -14,10 +14,10 @@ namespace ChessConsoleSystem
                 try
                 {
                     Console.Clear();
-                    Screen.PrintChessBoard(round.Board);
-                    Console.WriteLine($"\n   │ Round {round.Round}\t Await for {round.CurrentPlayerColor.ToString().ToUpper()} pieces play");
 
-                    Console.Write("   | -> Origin position: ");
+                    Screen.PrintChessMatch(round);
+
+                    Console.Write("   │ -> Origin position: ");
                     var origin = Screen.ReadChessPosition().ToPosition();
                     round.ValidateOriginPosition(origin);
 
@@ -27,7 +27,7 @@ namespace ChessConsoleSystem
 
                     Console.WriteLine($"\n   │ Round {round.Round}\t Choose your position");
 
-                    Console.Write("   | -> End position: ");
+                    Console.Write("   │ -> End position: ");
                     var end = Screen.ReadChessPosition().ToPosition();
 
                     round.ValidateEndPosition(origin, end);
@@ -36,12 +36,12 @@ namespace ChessConsoleSystem
                 }
                 catch (GameBoardException ex)
                 {
-                    Console.WriteLine($"   ! Ooops... < {ex.Message} >");
+                    Console.WriteLine($"   > ! Ooops... < {ex.Message} >");
                     Console.ReadLine();
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"   ! Error < {ex.Message} >");
+                    Console.WriteLine($"   > ! Error < {ex.Message} >");
                     Console.ReadLine();
                 }
             }
