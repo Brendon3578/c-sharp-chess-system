@@ -16,6 +16,7 @@
         }
 
         public void IncrementMovesAmount() => MovesAmount++;
+        public void DecrementMovesAmount() => MovesAmount--;
 
         abstract public bool[,] GetPossibleMoveset();
 

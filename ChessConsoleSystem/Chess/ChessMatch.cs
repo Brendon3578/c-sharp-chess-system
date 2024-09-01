@@ -9,26 +9,27 @@ namespace ChessConsoleSystem.Chess
         public int Round { get; private set; }
         public Color CurrentPlayerColor { get; private set; }
         public bool IsEnded { get; private set; }
+        public Color FirstPlayerColor { get; set; }
+        public Color SecondPlayerColor { get; set; }
         private HashSet<Piece> Pieces;
         private HashSet<Piece> CapturedPieces;
+        public bool IsCheckmate { get; private set; }
 
         public ChessMatch()
         {
             Board = new ChessBoard(8, 8);
             Round = 1;
-            CurrentPlayerColor = Color.White;
+
+            FirstPlayerColor = Color.White;
+            SecondPlayerColor = Color.Black;
+            CurrentPlayerColor = FirstPlayerColor;
             Pieces = new HashSet<Piece>();
             CapturedPieces = new HashSet<Piece>();
             IsEnded = false;
+            IsCheckmate = false;
             PlacePieces();
         }
 
-        public void StartMatchTurn(Position origin, Position end)
-        {
-            ExecuteMoveset(origin, end);
-            Round++;
-            ChangePlayer();
-        }
 
         public void ValidateOriginPosition(Position origin)
         {
@@ -53,7 +54,7 @@ namespace ChessConsoleSystem.Chess
             }
         }
 
-        private void ExecuteMoveset(Position origin, Position end)
+        private Piece? ExecutePieceMoveset(Position origin, Position end)
         {
 
             Piece p = Board.RemovePiece(origin);
@@ -64,17 +65,68 @@ namespace ChessConsoleSystem.Chess
                 CapturedPieces.Add(CapturedPiece);
             }
             Board.PutPiece(p, end);
+            return CapturedPiece;
+        }
+
+
+        public void PlayerMovePiece(Position origin, Position end)
+        {
+            Piece? CapturedPiece = ExecutePieceMoveset(origin, end);
+
+            if (IsPlayerInCheckmate(CurrentPlayerColor))
+            {
+                UndoPieceMoveset(origin, end, CapturedPiece);
+                throw new CheckmateException("You can't put yourself in check");
+            }
+
+            if (IsPlayerInCheckmate(GetOpponentColor(CurrentPlayerColor)))
+                IsCheckmate = true;
+            else
+                IsCheckmate = false;
+
+            Round++;
+            ChangePlayer();
+        }
+
+        private void UndoPieceMoveset(Position origin, Position end, Piece? capturedPiece)
+        {
+            Piece p = Board.RemovePiece(end) ?? throw new InvalidPositionException("Piece don't exists in this end position!");
+            p.DecrementMovesAmount();
+
+            if (capturedPiece != null)
+            {
+                Board.PutPiece(p, end);
+                CapturedPieces.Remove(p);
+            }
+            Board.PutPiece(p, origin);
         }
 
         private void ChangePlayer()
         {
-            if (CurrentPlayerColor == Color.White)
-                CurrentPlayerColor = Color.Black;
-            else
-                CurrentPlayerColor = Color.White;
+            bool isFirstPlayerPlaying = CurrentPlayerColor == FirstPlayerColor;
+            CurrentPlayerColor = isFirstPlayerPlaying ? SecondPlayerColor : FirstPlayerColor;
         }
 
-        public void PlaceNewPiece(char file, int rank, Piece p)
+        private Color GetOpponentColor(Color playerColor)
+        {
+            if (playerColor == FirstPlayerColor) return SecondPlayerColor;
+            return FirstPlayerColor;
+        }
+
+        private Piece? GetKingPiece(Color playerColor)
+        {
+            return GetMatchPiecesByColor(playerColor).FirstOrDefault(player => player is King, null);
+        }
+
+        public bool IsPlayerInCheckmate(Color playerColor)
+        {
+            var king = GetKingPiece(playerColor) ?? throw new GameBoardException($"{playerColor} King piece does'nt exists!");
+
+            return GetMatchPiecesByColor(GetOpponentColor(playerColor))
+                .Any(p => p.GetPossibleMoveset()[king.Position.Row, king.Position.Column]);
+        }
+
+        private void PlaceNewPiece(char file, int rank, Piece p)
         {
             Board.PutPiece(p, new ChessPosition(file, rank).ToPosition());
             Pieces.Add(p);

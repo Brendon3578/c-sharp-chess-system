@@ -32,7 +32,7 @@ namespace ChessConsoleSystem
 
                     round.ValidateEndPosition(origin, end);
 
-                    round.StartMatchTurn(origin, end);
+                    round.PlayerMovePiece(origin, end);
                 }
                 catch (GameBoardException ex)
                 {

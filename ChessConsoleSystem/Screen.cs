@@ -10,12 +10,18 @@ namespace ChessConsoleSystem
         {
             PrintChessBoard(match.Board);
             PrintCapturedPieces(match);
+
             Console.WriteLine($"\n   ┌ Round {match.Round}");
             Console.Write("   │ Await for ");
             Console.ForegroundColor = ConvertPieceColorToConsoleColor(match.CurrentPlayerColor);
             Console.Write(match.CurrentPlayerColor.ToString().ToUpperInvariant());
             Console.ResetColor();
             Console.WriteLine(" pieces to play");
+
+            if (match.IsCheckmate)
+            {
+                Console.WriteLine("   │ # In check!");
+            }
         }
 
         public static void PrintChessBoard(ChessBoard board, bool[,]? possibleMoveset = null)
@@ -48,10 +54,10 @@ namespace ChessConsoleSystem
         public static void PrintCapturedPieces(ChessMatch match)
         {
             Console.WriteLine("   ┌ Captured Pieces");
-            Console.Write("   │ White:");
-            PrintPiecesSet(match.GetCapturedPiecesByColor(Color.White));
-            Console.Write("   │ Black:");
-            PrintPiecesSet(match.GetCapturedPiecesByColor(Color.Black));
+            Console.Write($"   │ {match.FirstPlayerColor}:");
+            PrintPiecesSet(match.GetCapturedPiecesByColor(match.FirstPlayerColor));
+            Console.Write($"   │ {match.SecondPlayerColor}:");
+            PrintPiecesSet(match.GetCapturedPiecesByColor(match.SecondPlayerColor));
         }
 
         public static void PrintPiecesSet(HashSet<Piece> piecesSet)
