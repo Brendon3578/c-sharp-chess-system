@@ -1,4 +1,5 @@
 ﻿using ChessConsoleSystem.Chess;
+using ChessConsoleSystem.GameBoard;
 using ChessConsoleSystem.GameBoard.Exceptions;
 
 namespace ChessConsoleSystem
@@ -22,7 +23,8 @@ namespace ChessConsoleSystem
                     match.ValidateOriginPosition(origin);
 
                     Console.Clear();
-                    bool[,] possibleMoveset = match.Board.GetPiece(origin).GetPossibleMoveset();
+                    Piece originPiece = match.Board.GetPiece(origin) ?? throw new NullReferenceException();
+                    bool[,] possibleMoveset = originPiece.GetPossibleMoveset();
                     Screen.PrintChessBoard(match.Board, possibleMoveset);
 
                     Console.WriteLine($"\n   │ match {match.Round}\t Choose your position");

@@ -11,8 +11,8 @@ namespace ChessConsoleSystem.Chess
         public bool IsEnded { get; private set; }
         public Color FirstPlayerColor { get; set; }
         public Color SecondPlayerColor { get; set; }
-        private HashSet<Piece> Pieces;
-        private HashSet<Piece> CapturedPieces;
+        private HashSet<Piece> _pieces;
+        private HashSet<Piece> _capturedPieces;
         public bool IsCheckmate { get; private set; }
 
         public ChessMatch()
@@ -23,8 +23,8 @@ namespace ChessConsoleSystem.Chess
             FirstPlayerColor = Color.White;
             SecondPlayerColor = Color.Black;
             CurrentPlayerColor = FirstPlayerColor;
-            Pieces = new HashSet<Piece>();
-            CapturedPieces = new HashSet<Piece>();
+            _pieces = new HashSet<Piece>();
+            _capturedPieces = new HashSet<Piece>();
             IsEnded = false;
             IsCheckmate = false;
             PlacePieces();
@@ -48,7 +48,7 @@ namespace ChessConsoleSystem.Chess
         {
             var originPiece = Board.GetPiece(origin) ?? throw new InvalidPositionException("Piece don't exists in this origin position!");
 
-            if (!originPiece.IsPossibleToMoveTo(end))
+            if (!originPiece.IsPossibleMove(end))
             {
                 throw new InvalidPositionException("You cant move for this end position!");
             }
@@ -62,7 +62,7 @@ namespace ChessConsoleSystem.Chess
             var CapturedPiece = Board.RemovePiece(end);
             if (CapturedPiece != null)
             {
-                CapturedPieces.Add(CapturedPiece);
+                _capturedPieces.Add(CapturedPiece);
             }
             Board.PutPiece(p, end);
             return CapturedPiece;
@@ -73,18 +73,18 @@ namespace ChessConsoleSystem.Chess
         {
             Piece? CapturedPiece = ExecutePieceMoveset(origin, end);
 
-            if (VerifyPlayerInCheck(CurrentPlayerColor))
+            if (IsPlayerInCheck(CurrentPlayerColor))
             {
                 UndoPieceMoveset(origin, end, CapturedPiece);
                 throw new CheckmateException("You can't put yourself in check");
             }
 
-            if (VerifyPlayerInCheck(GetOpponentColor(CurrentPlayerColor)))
+            if (IsPlayerInCheck(GetOpponentColor(CurrentPlayerColor)))
                 IsCheckmate = true;
             else
                 IsCheckmate = false;
 
-            if (VerifyPlayerInCheckmate(GetOpponentColor(CurrentPlayerColor)))
+            if (IsPlayerInCheckmate(GetOpponentColor(CurrentPlayerColor)))
             {
                 IsEnded = true;
             }
@@ -105,39 +105,36 @@ namespace ChessConsoleSystem.Chess
             if (capturedPiece != null)
             {
                 Board.PutPiece(capturedPiece, end);
-                CapturedPieces.Remove(capturedPiece);
+                _capturedPieces.Remove(capturedPiece);
             }
             Board.PutPiece(p, origin);
         }
 
         private void ChangePlayer()
         {
-            bool isFirstPlayerPlaying = CurrentPlayerColor == FirstPlayerColor;
-            CurrentPlayerColor = isFirstPlayerPlaying ? SecondPlayerColor : FirstPlayerColor;
+            CurrentPlayerColor = GetOpponentColor(CurrentPlayerColor);
         }
 
         private Color GetOpponentColor(Color playerColor)
         {
-            if (playerColor == FirstPlayerColor) return SecondPlayerColor;
-            return FirstPlayerColor;
+            return playerColor == FirstPlayerColor ? SecondPlayerColor : FirstPlayerColor;
         }
 
         private Piece? GetKingPiece(Color playerColor)
         {
-            return GetMatchPiecesByColor(playerColor).FirstOrDefault(player => player is King, null);
+            return GetMatchPiecesByColor(playerColor).FirstOrDefault(p => p is King, null);
         }
 
-        public bool VerifyPlayerInCheck(Color playerColor)
+        public bool IsPlayerInCheck(Color playerColor)
         {
             var king = GetKingPiece(playerColor) ?? throw new GameBoardException($"{playerColor} King piece does'nt exists!");
-
             return GetMatchPiecesByColor(GetOpponentColor(playerColor))
                 .Any(p => p.GetPossibleMoveset()[king.Position.Row, king.Position.Column]);
         }
 
-        public bool VerifyPlayerInCheckmate(Color playerColor)
+        public bool IsPlayerInCheckmate(Color playerColor)
         {
-            if (!VerifyPlayerInCheck(playerColor))
+            if (!IsPlayerInCheck(playerColor))
                 return false;
 
             foreach (var piece in GetMatchPiecesByColor(playerColor))
@@ -152,7 +149,7 @@ namespace ChessConsoleSystem.Chess
                             var origin = piece.Position;
                             var end = new Position(i, j);
                             Piece? capturedPiece = ExecutePieceMoveset(origin, end);
-                            bool isKingStillInCheck = VerifyPlayerInCheck(playerColor);
+                            bool isKingStillInCheck = IsPlayerInCheck(playerColor);
                             UndoPieceMoveset(origin, end, capturedPiece);
                             if (!isKingStillInCheck)
                             {
@@ -168,17 +165,17 @@ namespace ChessConsoleSystem.Chess
         private void PlaceNewPiece(char file, int rank, Piece p)
         {
             Board.PutPiece(p, new ChessPosition(file, rank).ToPosition());
-            Pieces.Add(p);
+            _pieces.Add(p);
         }
 
         public HashSet<Piece> GetMatchPiecesByColor(Color color)
         {
-            return Pieces.Where(p => p.Color == color && !CapturedPieces.Contains(p)).ToHashSet();
+            return _pieces.Where(p => p.Color == color && !_capturedPieces.Contains(p)).ToHashSet();
         }
 
         public HashSet<Piece> GetCapturedPiecesByColor(Color color)
         {
-            return CapturedPieces.Where(p => p.Color == color).ToHashSet();
+            return _capturedPieces.Where(p => p.Color == color).ToHashSet();
         }
 
         public void PlacePieces()

@@ -15,8 +15,8 @@ namespace ChessConsoleSystem
 
             if (match.IsEnded)
             {
-                Console.WriteLine("   │ Checkmate!");
-                Console.WriteLine($"   └ # The winner is {match.CurrentPlayerColor}");
+                Console.WriteLine("   │ # Checkmate #");
+                Console.WriteLine($"   └ The winner is {match.CurrentPlayerColor} pieces!");
                 return;
             }
             Console.Write("   │ Await for ");

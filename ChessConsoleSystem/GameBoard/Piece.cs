@@ -2,7 +2,7 @@
 {
     abstract class Piece
     {
-        public Position Position { get; set; }
+        public Position? Position { get; set; }
         public Color Color { get; protected set; }
         public int MovesAmount { get; protected set; }
         public ChessBoard Board { get; protected set; }
@@ -22,13 +22,13 @@
 
         protected bool CanMove(Position pos)
         {
-            Piece p = Board.GetPiece(pos);
+            Piece? p = Board.GetPiece(pos);
             bool isFreeSpace = p == null;
             bool hasEnemyPiece = p?.Color != Color;
             return isFreeSpace || hasEnemyPiece;
         }
 
-        public bool IsPossibleToMoveTo(Position pos)
+        public bool IsPossibleMove(Position pos)
         {
             return GetPossibleMoveset()[pos.Row, pos.Column];
         }
