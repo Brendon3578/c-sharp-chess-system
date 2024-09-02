@@ -73,19 +73,28 @@ namespace ChessConsoleSystem.Chess
         {
             Piece? CapturedPiece = ExecutePieceMoveset(origin, end);
 
-            if (IsPlayerInCheckmate(CurrentPlayerColor))
+            if (VerifyPlayerInCheck(CurrentPlayerColor))
             {
                 UndoPieceMoveset(origin, end, CapturedPiece);
                 throw new CheckmateException("You can't put yourself in check");
             }
 
-            if (IsPlayerInCheckmate(GetOpponentColor(CurrentPlayerColor)))
+            if (VerifyPlayerInCheck(GetOpponentColor(CurrentPlayerColor)))
                 IsCheckmate = true;
             else
                 IsCheckmate = false;
 
-            Round++;
-            ChangePlayer();
+            if (VerifyPlayerInCheckmate(GetOpponentColor(CurrentPlayerColor)))
+            {
+                IsEnded = true;
+            }
+            else
+            {
+                Round++;
+                ChangePlayer();
+
+            }
+
         }
 
         private void UndoPieceMoveset(Position origin, Position end, Piece? capturedPiece)
@@ -95,8 +104,8 @@ namespace ChessConsoleSystem.Chess
 
             if (capturedPiece != null)
             {
-                Board.PutPiece(p, end);
-                CapturedPieces.Remove(p);
+                Board.PutPiece(capturedPiece, end);
+                CapturedPieces.Remove(capturedPiece);
             }
             Board.PutPiece(p, origin);
         }
@@ -118,12 +127,42 @@ namespace ChessConsoleSystem.Chess
             return GetMatchPiecesByColor(playerColor).FirstOrDefault(player => player is King, null);
         }
 
-        public bool IsPlayerInCheckmate(Color playerColor)
+        public bool VerifyPlayerInCheck(Color playerColor)
         {
             var king = GetKingPiece(playerColor) ?? throw new GameBoardException($"{playerColor} King piece does'nt exists!");
 
             return GetMatchPiecesByColor(GetOpponentColor(playerColor))
                 .Any(p => p.GetPossibleMoveset()[king.Position.Row, king.Position.Column]);
+        }
+
+        public bool VerifyPlayerInCheckmate(Color playerColor)
+        {
+            if (!VerifyPlayerInCheck(playerColor))
+                return false;
+
+            foreach (var piece in GetMatchPiecesByColor(playerColor))
+            {
+                bool[,] moveset = piece.GetPossibleMoveset();
+                for (int i = 0; i < Board.Rows; i++)
+                {
+                    for (int j = 0; j < Board.Columns; j++)
+                    {
+                        if (moveset[i, j])
+                        {
+                            var origin = piece.Position;
+                            var end = new Position(i, j);
+                            Piece? capturedPiece = ExecutePieceMoveset(origin, end);
+                            bool isKingStillInCheck = VerifyPlayerInCheck(playerColor);
+                            UndoPieceMoveset(origin, end, capturedPiece);
+                            if (!isKingStillInCheck)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
         }
 
         private void PlaceNewPiece(char file, int rank, Piece p)
@@ -144,7 +183,17 @@ namespace ChessConsoleSystem.Chess
 
         public void PlacePieces()
         {
-            PlaceNewPiece('c', 1, new Rook(Board, Color.White));
+            PlaceNewPiece('c', 1, new Rook(Board, FirstPlayerColor));
+            PlaceNewPiece('d', 1, new King(Board, FirstPlayerColor));
+            PlaceNewPiece('h', 7, new Rook(Board, FirstPlayerColor));
+
+
+            PlaceNewPiece('a', 8, new King(Board, SecondPlayerColor));
+            PlaceNewPiece('b', 8, new Rook(Board, SecondPlayerColor));
+
+
+
+            /*PlaceNewPiece('c', 1, new Rook(Board, Color.White));
             PlaceNewPiece('c', 2, new Rook(Board, Color.White));
             PlaceNewPiece('d', 2, new Rook(Board, Color.White));
             PlaceNewPiece('e', 2, new Rook(Board, Color.White));
@@ -156,7 +205,7 @@ namespace ChessConsoleSystem.Chess
             PlaceNewPiece('d', 7, new Rook(Board, Color.Black));
             PlaceNewPiece('e', 7, new Rook(Board, Color.Black));
             PlaceNewPiece('e', 8, new Rook(Board, Color.Black));
-            PlaceNewPiece('d', 8, new King(Board, Color.Black));
+            PlaceNewPiece('d', 8, new King(Board, Color.Black));*/
         }
     }
 }

@@ -12,6 +12,13 @@ namespace ChessConsoleSystem
             PrintCapturedPieces(match);
 
             Console.WriteLine($"\n   ┌ Round {match.Round}");
+
+            if (match.IsEnded)
+            {
+                Console.WriteLine("   │ Checkmate!");
+                Console.WriteLine($"   └ # The winner is {match.CurrentPlayerColor}");
+                return;
+            }
             Console.Write("   │ Await for ");
             Console.ForegroundColor = ConvertPieceColorToConsoleColor(match.CurrentPlayerColor);
             Console.Write(match.CurrentPlayerColor.ToString().ToUpperInvariant());

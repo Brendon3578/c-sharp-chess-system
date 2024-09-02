@@ -7,32 +7,32 @@ namespace ChessConsoleSystem
     {
         static void Main(string[] args)
         {
-            var round = new ChessMatch();
+            var match = new ChessMatch();
 
-            while (!round.IsEnded)
+            while (!match.IsEnded)
             {
                 try
                 {
                     Console.Clear();
 
-                    Screen.PrintChessMatch(round);
+                    Screen.PrintChessMatch(match);
 
                     Console.Write("   │ -> Origin position: ");
                     var origin = Screen.ReadChessPosition().ToPosition();
-                    round.ValidateOriginPosition(origin);
+                    match.ValidateOriginPosition(origin);
 
                     Console.Clear();
-                    bool[,] possibleMoveset = round.Board.GetPiece(origin).GetPossibleMoveset();
-                    Screen.PrintChessBoard(round.Board, possibleMoveset);
+                    bool[,] possibleMoveset = match.Board.GetPiece(origin).GetPossibleMoveset();
+                    Screen.PrintChessBoard(match.Board, possibleMoveset);
 
-                    Console.WriteLine($"\n   │ Round {round.Round}\t Choose your position");
+                    Console.WriteLine($"\n   │ match {match.Round}\t Choose your position");
 
                     Console.Write("   │ -> End position: ");
                     var end = Screen.ReadChessPosition().ToPosition();
 
-                    round.ValidateEndPosition(origin, end);
+                    match.ValidateEndPosition(origin, end);
 
-                    round.PlayerMovePiece(origin, end);
+                    match.PlayerMovePiece(origin, end);
                 }
                 catch (GameBoardException ex)
                 {
@@ -45,7 +45,8 @@ namespace ChessConsoleSystem
                     Console.ReadLine();
                 }
             }
-
+            Console.Clear();
+            Screen.PrintChessMatch(match);
         }
     }
 }
