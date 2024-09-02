@@ -183,6 +183,7 @@ namespace ChessConsoleSystem.Chess
             PlaceNewPiece('c', 1, new Rook(Board, FirstPlayerColor));
             PlaceNewPiece('d', 1, new King(Board, FirstPlayerColor));
             PlaceNewPiece('h', 7, new Rook(Board, FirstPlayerColor));
+            PlaceNewPiece('d', 5, new Knight(Board, FirstPlayerColor));
 
 
             PlaceNewPiece('a', 8, new King(Board, SecondPlayerColor));

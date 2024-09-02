@@ -27,7 +27,7 @@ namespace ChessConsoleSystem
                     bool[,] possibleMoveset = originPiece.GetPossibleMoveset();
                     Screen.PrintChessBoard(match.Board, possibleMoveset);
 
-                    Console.WriteLine($"\n   │ match {match.Round}\t Choose your position");
+                    Console.WriteLine($"\n   │ Turn {match.Round}\t Choose your position");
 
                     Console.Write("   │ -> End position: ");
                     var end = Screen.ReadChessPosition().ToPosition();
