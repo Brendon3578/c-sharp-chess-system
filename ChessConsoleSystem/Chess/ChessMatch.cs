@@ -187,8 +187,7 @@ namespace ChessConsoleSystem.Chess
 
             PlaceNewPiece('a', 8, new King(Board, SecondPlayerColor));
             PlaceNewPiece('b', 8, new Rook(Board, SecondPlayerColor));
-
-
+            PlaceNewPiece('h', 8, new Bishop(Board, SecondPlayerColor));
 
             /*PlaceNewPiece('c', 1, new Rook(Board, Color.White));
             PlaceNewPiece('c', 2, new Rook(Board, Color.White));
