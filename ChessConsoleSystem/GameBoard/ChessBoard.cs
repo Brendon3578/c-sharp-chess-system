@@ -7,6 +7,8 @@ namespace ChessConsoleSystem.GameBoard
         public int Rows { get; set; }
         public int Columns { get; set; }
         private Piece[,] Pieces;
+        public Color FirstPlayerColor { get; set; }
+        public Color SecondPlayerColor { get; set; }
         public ChessBoard(int rows, int columns)
         {
             Rows = rows;

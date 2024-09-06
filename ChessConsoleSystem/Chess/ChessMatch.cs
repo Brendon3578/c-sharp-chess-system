@@ -9,8 +9,7 @@ namespace ChessConsoleSystem.Chess
         public int Round { get; private set; }
         public Color CurrentPlayerColor { get; private set; }
         public bool IsEnded { get; private set; }
-        public Color FirstPlayerColor { get; set; }
-        public Color SecondPlayerColor { get; set; }
+
         private HashSet<Piece> _pieces;
         private HashSet<Piece> _capturedPieces;
         public bool IsCheckmate { get; private set; }
@@ -20,9 +19,9 @@ namespace ChessConsoleSystem.Chess
             Board = new ChessBoard(8, 8);
             Round = 1;
 
-            FirstPlayerColor = Color.White;
-            SecondPlayerColor = Color.Black;
-            CurrentPlayerColor = FirstPlayerColor;
+            Board.FirstPlayerColor = Color.White;
+            Board.SecondPlayerColor = Color.Black;
+            CurrentPlayerColor = Board.FirstPlayerColor;
             _pieces = new HashSet<Piece>();
             _capturedPieces = new HashSet<Piece>();
             IsEnded = false;
@@ -117,7 +116,7 @@ namespace ChessConsoleSystem.Chess
 
         private Color GetOpponentColor(Color playerColor)
         {
-            return playerColor == FirstPlayerColor ? SecondPlayerColor : FirstPlayerColor;
+            return playerColor == Board.FirstPlayerColor ? Board.SecondPlayerColor : Board.FirstPlayerColor;
         }
 
         private Piece? GetKingPiece(Color playerColor)
@@ -180,16 +179,16 @@ namespace ChessConsoleSystem.Chess
 
         public void PlacePieces()
         {
-            PlaceNewPiece('c', 1, new Rook(Board, FirstPlayerColor));
-            PlaceNewPiece('d', 1, new King(Board, FirstPlayerColor));
-            PlaceNewPiece('h', 7, new Rook(Board, FirstPlayerColor));
-            PlaceNewPiece('d', 5, new Knight(Board, FirstPlayerColor));
+            PlaceNewPiece('c', 1, new Rook(Board, Board.FirstPlayerColor));
+            PlaceNewPiece('d', 1, new King(Board, Board.FirstPlayerColor));
+            PlaceNewPiece('h', 7, new Rook(Board, Board.FirstPlayerColor));
+            PlaceNewPiece('d', 5, new Knight(Board, Board.FirstPlayerColor));
 
 
-            PlaceNewPiece('a', 8, new King(Board, SecondPlayerColor));
-            PlaceNewPiece('b', 8, new Rook(Board, SecondPlayerColor));
-            PlaceNewPiece('h', 8, new Bishop(Board, SecondPlayerColor));
-            PlaceNewPiece('h', 6, new Queen(Board, SecondPlayerColor));
+            PlaceNewPiece('a', 8, new King(Board, Board.SecondPlayerColor));
+            PlaceNewPiece('b', 8, new Rook(Board, Board.SecondPlayerColor));
+            PlaceNewPiece('h', 8, new Bishop(Board, Board.SecondPlayerColor));
+            PlaceNewPiece('h', 6, new Queen(Board, Board.SecondPlayerColor));
 
             /*PlaceNewPiece('c', 1, new Rook(Board, Color.White));
             PlaceNewPiece('c', 2, new Rook(Board, Color.White));

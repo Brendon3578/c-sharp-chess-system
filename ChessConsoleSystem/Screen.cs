@@ -61,10 +61,10 @@ namespace ChessConsoleSystem
         public static void PrintCapturedPieces(ChessMatch match)
         {
             Console.WriteLine("   ┌ Captured Pieces");
-            Console.Write($"   │ {match.FirstPlayerColor}:");
-            PrintPiecesSet(match.GetCapturedPiecesByColor(match.FirstPlayerColor));
-            Console.Write($"   │ {match.SecondPlayerColor}:");
-            PrintPiecesSet(match.GetCapturedPiecesByColor(match.SecondPlayerColor));
+            Console.Write($"   │ {match.Board.FirstPlayerColor}:");
+            PrintPiecesSet(match.GetCapturedPiecesByColor(match.Board.FirstPlayerColor));
+            Console.Write($"   │ {match.Board.SecondPlayerColor}:");
+            PrintPiecesSet(match.GetCapturedPiecesByColor(match.Board.SecondPlayerColor));
         }
 
         public static void PrintPiecesSet(HashSet<Piece> piecesSet)
