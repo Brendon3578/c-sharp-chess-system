@@ -179,30 +179,37 @@ namespace ChessConsoleSystem.Chess
 
         public void PlacePieces()
         {
-            PlaceNewPiece('c', 1, new Rook(Board, Board.FirstPlayerColor));
-            PlaceNewPiece('d', 1, new King(Board, Board.FirstPlayerColor));
-            PlaceNewPiece('h', 7, new Rook(Board, Board.FirstPlayerColor));
-            PlaceNewPiece('d', 5, new Knight(Board, Board.FirstPlayerColor));
+            // Place pieces for white pieces (first player)
+            PlaceNewPiece('a', 1, new Rook(Board, Board.FirstPlayerColor));
+            PlaceNewPiece('b', 1, new Knight(Board, Board.FirstPlayerColor));
+            PlaceNewPiece('c', 1, new Bishop(Board, Board.FirstPlayerColor));
+            PlaceNewPiece('d', 1, new Queen(Board, Board.FirstPlayerColor));
+            PlaceNewPiece('e', 1, new King(Board, Board.FirstPlayerColor));
+            PlaceNewPiece('f', 1, new Bishop(Board, Board.FirstPlayerColor));
+            PlaceNewPiece('g', 1, new Knight(Board, Board.FirstPlayerColor));
+            PlaceNewPiece('h', 1, new Rook(Board, Board.FirstPlayerColor));
 
+            // Place pawns for white pieces (first player)
+            for (char file = 'a'; file <= 'h'; file++)
+            {
+                PlaceNewPiece(file, 2, new Pawn(Board, Board.FirstPlayerColor));
+            }
 
-            PlaceNewPiece('a', 8, new King(Board, Board.SecondPlayerColor));
-            PlaceNewPiece('b', 8, new Rook(Board, Board.SecondPlayerColor));
-            PlaceNewPiece('h', 8, new Bishop(Board, Board.SecondPlayerColor));
-            PlaceNewPiece('h', 6, new Queen(Board, Board.SecondPlayerColor));
+            // Place pieces for black pieces (second player)
+            PlaceNewPiece('a', 8, new Rook(Board, Board.SecondPlayerColor));
+            PlaceNewPiece('b', 8, new Knight(Board, Board.SecondPlayerColor));
+            PlaceNewPiece('c', 8, new Bishop(Board, Board.SecondPlayerColor));
+            PlaceNewPiece('d', 8, new Queen(Board, Board.SecondPlayerColor));
+            PlaceNewPiece('e', 8, new King(Board, Board.SecondPlayerColor));
+            PlaceNewPiece('f', 8, new Bishop(Board, Board.SecondPlayerColor));
+            PlaceNewPiece('g', 8, new Knight(Board, Board.SecondPlayerColor));
+            PlaceNewPiece('h', 8, new Rook(Board, Board.SecondPlayerColor));
 
-            /*PlaceNewPiece('c', 1, new Rook(Board, Color.White));
-            PlaceNewPiece('c', 2, new Rook(Board, Color.White));
-            PlaceNewPiece('d', 2, new Rook(Board, Color.White));
-            PlaceNewPiece('e', 2, new Rook(Board, Color.White));
-            PlaceNewPiece('e', 1, new Rook(Board, Color.White));
-            PlaceNewPiece('d', 1, new King(Board, Color.White));
-
-            PlaceNewPiece('c', 7, new Rook(Board, Color.Black));
-            PlaceNewPiece('c', 8, new Rook(Board, Color.Black));
-            PlaceNewPiece('d', 7, new Rook(Board, Color.Black));
-            PlaceNewPiece('e', 7, new Rook(Board, Color.Black));
-            PlaceNewPiece('e', 8, new Rook(Board, Color.Black));
-            PlaceNewPiece('d', 8, new King(Board, Color.Black));*/
+            // Place pawns for black pieces (second player)
+            for (char file = 'a'; file <= 'h'; file++)
+            {
+                PlaceNewPiece(file, 7, new Pawn(Board, Board.SecondPlayerColor));
+            }
         }
     }
 }
