@@ -58,7 +58,7 @@ namespace ChessConsoleSystem.Chess
                 if (Board.IsValidPosition(move) && IsFreePosition(move) && MovesAmount == 0)
                     moveset[move.Row, move.Column] = true;
 
-                move.SetValues(Position.Row + 1, Position.Column + 1);
+                move.SetValues(Position.Row + 1, Position.Column - 1);
                 if (Board.IsValidPosition(move) && ExistsEnemy(move))
                     moveset[move.Row, move.Column] = true;
 

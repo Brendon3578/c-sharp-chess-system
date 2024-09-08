@@ -64,6 +64,31 @@ namespace ChessConsoleSystem.Chess
                 _capturedPieces.Add(CapturedPiece);
             }
             Board.PutPiece(p, end);
+
+            bool isShortCastling = p is King && end.Column == origin.Column + 2;
+            bool isLongCastling = p is King && end.Column == origin.Column - 2;
+            if (isShortCastling)
+            {
+                // #special move - short castling or kingside (roque pequeno)
+                Position rookOrigin = new(origin.Row, origin.Column + 3);
+                Position rookEnd = new(origin.Row, origin.Column + 1);
+
+                Piece Rook = Board.RemovePiece(rookOrigin) ?? throw new InvalidPositionException("Unable to do castling!");
+                Rook.IncrementMovesAmount();
+                Board.PutPiece(Rook, rookEnd);
+            }
+            else if (isLongCastling)
+            {
+                // #special move - long castling or queenside (roque grande)
+                Position rookOrigin = new(origin.Row, origin.Column - 4);
+                Position rookEnd = new(origin.Row, origin.Column - 1);
+
+                Piece Rook = Board.RemovePiece(rookOrigin) ?? throw new InvalidPositionException("Unable to do castling!");
+                Rook.IncrementMovesAmount();
+                Board.PutPiece(Rook, rookEnd);
+            }
+
+
             return CapturedPiece;
         }
 
@@ -91,9 +116,7 @@ namespace ChessConsoleSystem.Chess
             {
                 Round++;
                 ChangePlayer();
-
             }
-
         }
 
         private void UndoPieceMoveset(Position origin, Position end, Piece? capturedPiece)
@@ -107,6 +130,30 @@ namespace ChessConsoleSystem.Chess
                 _capturedPieces.Remove(capturedPiece);
             }
             Board.PutPiece(p, origin);
+
+            bool isShortCastling = p is King && end.Column == origin.Column + 2;
+            bool isLongCastling = p is King && end.Column == origin.Column - 2;
+            if (isShortCastling)
+            {
+                // #special move - short castling or kingside (roque pequeno)
+                Position rookOrigin = new(origin.Row, origin.Column + 3);
+                Position rookEnd = new(origin.Row, origin.Column + 1);
+
+                Piece Rook = Board.RemovePiece(rookEnd) ?? throw new InvalidPositionException("Unable to do castling!");
+                Rook.DecrementMovesAmount();
+                Board.PutPiece(Rook, rookOrigin);
+            }
+            else if (isLongCastling)
+            {
+                // #special move - long castling or queenside (roque grande)
+                Position rookOrigin = new(origin.Row, origin.Column - 4);
+                Position rookEnd = new(origin.Row, origin.Column - 1);
+
+                Piece Rook = Board.RemovePiece(rookEnd) ?? throw new InvalidPositionException("Unable to do castling!");
+                Rook.IncrementMovesAmount();
+                Board.PutPiece(Rook, rookOrigin);
+            }
+
         }
 
         private void ChangePlayer()
@@ -184,7 +231,7 @@ namespace ChessConsoleSystem.Chess
             PlaceNewPiece('b', 1, new Knight(Board, Board.FirstPlayerColor));
             PlaceNewPiece('c', 1, new Bishop(Board, Board.FirstPlayerColor));
             PlaceNewPiece('d', 1, new Queen(Board, Board.FirstPlayerColor));
-            PlaceNewPiece('e', 1, new King(Board, Board.FirstPlayerColor));
+            PlaceNewPiece('e', 1, new King(Board, Board.FirstPlayerColor, this));
             PlaceNewPiece('f', 1, new Bishop(Board, Board.FirstPlayerColor));
             PlaceNewPiece('g', 1, new Knight(Board, Board.FirstPlayerColor));
             PlaceNewPiece('h', 1, new Rook(Board, Board.FirstPlayerColor));
@@ -200,7 +247,7 @@ namespace ChessConsoleSystem.Chess
             PlaceNewPiece('b', 8, new Knight(Board, Board.SecondPlayerColor));
             PlaceNewPiece('c', 8, new Bishop(Board, Board.SecondPlayerColor));
             PlaceNewPiece('d', 8, new Queen(Board, Board.SecondPlayerColor));
-            PlaceNewPiece('e', 8, new King(Board, Board.SecondPlayerColor));
+            PlaceNewPiece('e', 8, new King(Board, Board.SecondPlayerColor, this));
             PlaceNewPiece('f', 8, new Bishop(Board, Board.SecondPlayerColor));
             PlaceNewPiece('g', 8, new Knight(Board, Board.SecondPlayerColor));
             PlaceNewPiece('h', 8, new Rook(Board, Board.SecondPlayerColor));
