@@ -5,7 +5,11 @@ namespace ChessConsoleSystem.Chess
     internal class Pawn : Piece
     {
 
-        public Pawn(ChessBoard board, Color color) : base(board, color) { }
+        public Pawn(ChessBoard board, Color color, ChessMatch match) : base(board, color)
+        {
+            _match = match;
+        }
+        private readonly ChessMatch _match;
 
         public override string ToString()
         {
@@ -47,6 +51,20 @@ namespace ChessConsoleSystem.Chess
                 if (Board.IsValidPosition(move) && ExistsEnemy(move))
                     moveset[move.Row, move.Column] = true;
 
+                // #special move for white pieces - En Passsant
+                if (Position.Row == 3)
+                {
+                    Position left = new Position(Position.Row, Position.Column - 1);
+
+                    if (CanMoveEnPassant(left))
+                        moveset[left.Row - 1, left.Column] = true;
+
+                    Position right = new Position(Position.Row, Position.Column + 1);
+
+                    if (CanMoveEnPassant(right))
+                        moveset[right.Row - 1, right.Column] = true;
+                }
+
             }
             else if (Color == Board.SecondPlayerColor)
             {
@@ -66,11 +84,32 @@ namespace ChessConsoleSystem.Chess
                 if (Board.IsValidPosition(move) && ExistsEnemy(move))
                     moveset[move.Row, move.Column] = true;
 
+                // #special move for black pieces - En Passsant
+                if (Position.Row == 4)
+                {
+                    Position left = new Position(Position.Row, Position.Column - 1);
+
+                    if (CanMoveEnPassant(left))
+                        moveset[left.Row + 1, left.Column] = true;
+
+                    Position right = new Position(Position.Row, Position.Column + 1);
+
+                    if (CanMoveEnPassant(right))
+                        moveset[right.Row + 1, right.Column] = true;
+                }
             }
 
 
 
             return moveset;
         }
+        private bool CanMoveEnPassant(Position enemy)
+        {
+            bool existsPieceInPlaceBoard = Board.IsValidPosition(enemy) && ExistsEnemy(enemy);
+            bool isPieceVulnerable = Board.GetPiece(enemy) == _match._vulnerablePieceForEnPassantMove;
+            return existsPieceInPlaceBoard && isPieceVulnerable;
+        }
     }
+
+
 }

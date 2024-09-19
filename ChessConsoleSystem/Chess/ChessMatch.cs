@@ -13,6 +13,7 @@ namespace ChessConsoleSystem.Chess
         private HashSet<Piece> _pieces;
         private HashSet<Piece> _capturedPieces;
         public bool IsCheckmate { get; private set; }
+        public Piece? _vulnerablePieceForEnPassantMove { get; private set; }
 
         public ChessMatch()
         {
@@ -26,6 +27,7 @@ namespace ChessConsoleSystem.Chess
             _capturedPieces = new HashSet<Piece>();
             IsEnded = false;
             IsCheckmate = false;
+            _vulnerablePieceForEnPassantMove = null;
             PlacePieces();
         }
 
@@ -88,8 +90,28 @@ namespace ChessConsoleSystem.Chess
                 Board.PutPiece(Rook, rookEnd);
             }
 
+            // #special move - En Passant
+            if (p is Pawn && origin.Column != end.Column && CapturedPiece == null)
+            {
+                // Verifica se o movimento é válido para En Passant
+                Position enPassantPawnPosition = GetEnPassantCapturePosition(p, end);
+                if (_vulnerablePieceForEnPassantMove == Board.GetPiece(enPassantPawnPosition))
+                {
+                    CapturedPiece = Board.RemovePiece(enPassantPawnPosition);
+                    _capturedPieces.Add(CapturedPiece ?? throw new InvalidPositionException("Piece doesn't exist for En Passant move!"));
+                }
+            }
+
+
 
             return CapturedPiece;
+        }
+
+        private Position GetEnPassantCapturePosition(Piece p, Position end)
+        {
+            return p.Color == Board.FirstPlayerColor
+                   ? new Position(end.Row + 1, end.Column) // Peão branco captura para cima
+                   : new Position(end.Row - 1, end.Column); // Peão preto captura para baixo
         }
 
 
@@ -117,6 +139,16 @@ namespace ChessConsoleSystem.Chess
                 Round++;
                 ChangePlayer();
             }
+
+            Piece? movedPiece = Board.GetPiece(end);
+
+            // #special move - Pawn En Passsant
+            bool isPawnFirstMove = end.Row == origin.Row - 2 || end.Row == origin.Row + 2;
+            if (movedPiece is Pawn && isPawnFirstMove)
+            {
+                _vulnerablePieceForEnPassantMove = movedPiece;
+            }
+
         }
 
         private void UndoPieceMoveset(Position origin, Position end, Piece? capturedPiece)
@@ -154,6 +186,24 @@ namespace ChessConsoleSystem.Chess
                 Board.PutPiece(Rook, rookOrigin);
             }
 
+
+            // #special move - En Passsant
+            bool isEnPassant = p is Pawn && origin.Row != end.Row && capturedPiece == _vulnerablePieceForEnPassantMove;
+            if (isEnPassant)
+            {
+                var enemyPiece = Board.RemovePiece(end);
+                Position? lastEnemyPosition = null;
+                if (p.Color == Board.FirstPlayerColor)
+                    lastEnemyPosition = new Position(3, end.Column);
+                else if (p.Color == Board.SecondPlayerColor)
+                    lastEnemyPosition = new Position(4, end.Column);
+
+                if (enemyPiece == null || lastEnemyPosition == null)
+                    throw new InvalidPositionException("Can't to undo En Passant move!");
+
+                Board.PutPiece(enemyPiece, lastEnemyPosition);
+
+            }
         }
 
         private void ChangePlayer()
@@ -239,7 +289,7 @@ namespace ChessConsoleSystem.Chess
             // Place pawns for white pieces (first player)
             for (char file = 'a'; file <= 'h'; file++)
             {
-                PlaceNewPiece(file, 2, new Pawn(Board, Board.FirstPlayerColor));
+                PlaceNewPiece(file, 2, new Pawn(Board, Board.FirstPlayerColor, this));
             }
 
             // Place pieces for black pieces (second player)
@@ -255,7 +305,7 @@ namespace ChessConsoleSystem.Chess
             // Place pawns for black pieces (second player)
             for (char file = 'a'; file <= 'h'; file++)
             {
-                PlaceNewPiece(file, 7, new Pawn(Board, Board.SecondPlayerColor));
+                PlaceNewPiece(file, 7, new Pawn(Board, Board.SecondPlayerColor, this));
             }
         }
     }

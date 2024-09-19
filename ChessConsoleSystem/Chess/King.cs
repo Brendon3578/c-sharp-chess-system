@@ -5,7 +5,7 @@ namespace ChessConsoleSystem.Chess
     internal class King : Piece
     {
 
-        private ChessMatch _match;
+        private readonly ChessMatch _match;
 
         public King(ChessBoard board, Color color, ChessMatch match) : base(board, color)
         {
