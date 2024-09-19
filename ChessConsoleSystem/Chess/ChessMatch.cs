@@ -119,10 +119,30 @@ namespace ChessConsoleSystem.Chess
         {
             Piece? CapturedPiece = ExecutePieceMoveset(origin, end);
 
+            Piece? movedPiece = Board.GetPiece(end);
+
+
             if (IsPlayerInCheck(CurrentPlayerColor))
             {
                 UndoPieceMoveset(origin, end, CapturedPiece);
                 throw new CheckmateException("You can't put yourself in check");
+            }
+
+            // #special move - promotion
+            if (movedPiece is Pawn)
+            {
+                bool isFirstPlayerPromotion = movedPiece.Color == Board.FirstPlayerColor && end.Row == 0;
+                bool isSecondPlayerPromotion = movedPiece.Color == Board.SecondPlayerColor && end.Row == 7;
+
+                if (isFirstPlayerPromotion || isSecondPlayerPromotion)
+                {
+                    movedPiece = Board.RemovePiece(end);
+                    _pieces.Remove(movedPiece);
+                    Piece queen = new Queen(Board, movedPiece.Color);
+                    Board.PutPiece(queen, end);
+                    _pieces.Add(queen);
+
+                }
             }
 
             if (IsPlayerInCheck(GetOpponentColor(CurrentPlayerColor)))
@@ -140,7 +160,6 @@ namespace ChessConsoleSystem.Chess
                 ChangePlayer();
             }
 
-            Piece? movedPiece = Board.GetPiece(end);
 
             // #special move - Pawn En Passsant
             bool isPawnFirstMove = end.Row == origin.Row - 2 || end.Row == origin.Row + 2;
